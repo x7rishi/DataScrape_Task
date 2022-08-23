@@ -1,3 +1,4 @@
+from urllib import response
 from bs4 import BeautifulSoup
 import requests, os.path
 from typing import List
@@ -71,22 +72,23 @@ class Scrapper:
             for i in self.country:
                 downloadLink, filename = self.GetCountryDownloadPath(i)
                 print(f"Downloading... {i} with filename as : {filename}")
-                name = self.__downloadFile(path, downloadLink, filename)
-                filelist.append(name)
+                self.__downloadFile(path, downloadLink, filename)
+                filelist.append(filename)
             return filelist
         else:
             print("Error while downloading the file ")
             return None
 
-    def __downloadFile(self, path, downloadLink, filename):
+    def __downloadFile(self, path, downloadLink,filename):
         if (os.path.isfile(os.path.join(path, filename))):
             print(f"{filename} data file already downloaded")
-
         else:
             with self.session.get(downloadLink) as rb:
-                with open(os.path.join(path, filename), 'wb') as f:
-                    f.write(rb.content)
-        return filename
+                try : 
+                    with open(os.path.join(path, filename), 'wb') as f:
+                        f.write(rb.content)
+                except Exception as e : 
+                    print('Error... while downloading the file')
 
 
 def main():
